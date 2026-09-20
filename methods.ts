@@ -2973,7 +2973,7 @@ export interface InputMediaVideo<F> {
   /** File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or use Telegraf's [Input helpers](https://telegraf.js.org/modules/Input.html) to upload a new one. */
   media: F | string;
   /** Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Thumbnails can't be reused and can be only uploaded as a new file. Use Telegraf's [Input helpers](https://telegraf.js.org/modules/Input.html) to upload a new thumbnail. */
-  thumbnail?: F;
+  thumbnail?: F | string;
   /** Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or use Telegraf's [Input helpers](https://telegraf.js.org/modules/Input.html) to upload a new one. */
   cover?: F | string;
   /** Start timestamp for the video in the message */
@@ -3005,7 +3005,7 @@ export interface InputMediaAnimation<F> {
   /** File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or use Telegraf's [Input helpers](https://telegraf.js.org/modules/Input.html) to upload a new one. */
   media: F | string;
   /** Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Thumbnails can't be reused and can be only uploaded as a new file. Use Telegraf's [Input helpers](https://telegraf.js.org/modules/Input.html) to upload a new thumbnail. */
-  thumbnail?: F;
+  thumbnail?: F | string;
   /** Caption of the animation to be sent, 0-1024 characters after entities parsing */
   caption?: string;
   /** Mode for parsing entities in the animation caption. See formatting options for more details. */
@@ -3031,7 +3031,7 @@ export interface InputMediaAudio<F> {
   /** File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or use Telegraf's [Input helpers](https://telegraf.js.org/modules/Input.html) to upload a new one. */
   media: F | string;
   /** Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Thumbnails can't be reused and can be only uploaded as a new file. Use Telegraf's [Input helpers](https://telegraf.js.org/modules/Input.html) to upload a new thumbnail. */
-  thumbnail?: F;
+  thumbnail?: F | string;
   /** Caption of the audio to be sent, 0-1024 characters after entities parsing */
   caption?: string;
   /** Mode for parsing entities in the audio caption. See formatting options for more details. */
@@ -3053,7 +3053,7 @@ export interface InputMediaDocument<F> {
   /** File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or use Telegraf's [Input helpers](https://telegraf.js.org/modules/Input.html) to upload a new one. */
   media: F | string;
   /** Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Thumbnails can't be reused and can be only uploaded as a new file. Use Telegraf's [Input helpers](https://telegraf.js.org/modules/Input.html) to upload a new thumbnail. */
-  thumbnail?: F;
+  thumbnail?: F | string;
   /** Caption of the document to be sent, 0-1024 characters after entities parsing */
   caption?: string;
   /** Mode for parsing entities in the document caption. See formatting options for more details. */

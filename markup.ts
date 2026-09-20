@@ -128,10 +128,25 @@ export interface CopyTextButton {
 /** This object represents a disabled button which does nothing. Currently holds no information. */
 export type DisabledButton = Record<string, never>;
 
+/** Text of a RichMessageButton. Can be a String for plain text, an Array of such values, or one of
+- RichText.CustomEmoji
+- RichText.DateTime */
+export type RichMessageButtonText =
+  | string
+  | RichMessageButtonText[]
+  | RichText.CustomEmoji
+  | RichText.DateTime;
+
+/** Describes a login URL for a button in a RichMessage. Same as LoginUrl, but the field bot_username isn't supported. */
+export interface RichMessageLoginUrl extends Omit<LoginUrl, "bot_username"> {
+  /** Not supported for buttons in rich messages */
+  bot_username?: never;
+}
+
 export declare namespace RichMessageButton {
   interface AbstractRichMessageButton {
     /** Text of the button. May contain only plain text, RichTextCustomEmoji and RichTextDateTime entities. */
-    text: RichText;
+    text: RichMessageButtonText;
   }
   interface StyledRichMessageButton extends AbstractRichMessageButton {
     /** Style of the button. Must be one of “danger”, “success” or “primary”. Apps may use theme-specific colors for the button background and text based on the style. */
@@ -152,8 +167,8 @@ export declare namespace RichMessageButton {
     web_app: WebAppInfo;
   }
   export interface LoginButton extends StyledRichMessageButton {
-    /** An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the Telegram Login Widget. Not supported for ephemeral messages. */
-    login_url: LoginUrl;
+    /** An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the Telegram Login Widget. The field bot_username isn't supported. Not supported for ephemeral messages. */
+    login_url: RichMessageLoginUrl;
   }
   export interface SwitchInlineButton extends StyledRichMessageButton {
     /** If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. Not supported for messages sent in channel direct messages chats and on behalf of a business account. */
