@@ -158,7 +158,7 @@ declare namespace ChatFullInfo {
     /** For private chats with business accounts, the opening hours of the business */
     business_opening_hours?: BusinessOpeningHours;
     /** For private chats, the personal channel of the user */
-    personal_chat?: Chat.ChannelChat;
+    personal_chat?: Chat;
     /** For private chats, the rating of the user if any */
     rating?: UserRating;
     /** For private chats, the first audio added to the profile of the user */

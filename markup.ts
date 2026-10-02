@@ -135,7 +135,7 @@ export type RichMessageButtonText =
   | string
   | RichMessageButtonText[]
   | RichText.CustomEmoji
-  | RichText.DateTime;
+  | (Omit<RichText.DateTime, "text"> & { text: RichMessageButtonText });
 
 /** Describes a login URL for a button in a RichMessage. Same as LoginUrl, but the field bot_username isn't supported. */
 export interface RichMessageLoginUrl extends Omit<LoginUrl, "bot_username"> {

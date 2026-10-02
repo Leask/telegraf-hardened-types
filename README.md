@@ -111,6 +111,11 @@ They can simply continue to be imported directly.
 
 This project is written for Deno and built for Node. Running `npm prepare` runs the deno2node script to build for Node.
 
+Run `npm ci` and `npm test` to rebuild declarations and type-check the positive
+and negative contract examples in `test/contracts.ts`. The same examples run
+against both the TypeScript sources and an isolated copy of the generated
+declarations, so source files cannot hide a declaration-generation regression.
+
 ## Where do the types come from
 
 They're handwritten. [Typegram](https://github.com/KnorpelSenf/typegram) was started by [@KnorpelSenf](https://github.com/KnorpelSenf), who eventually used it as a starting point for grammY's [types](https://github.com/grammyjs/types) package. `@telegraf/types` started as a fork of Typegram, specialised for Telegraf. It is now independently maintained and updated from the Bot API directly.
