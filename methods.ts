@@ -1083,7 +1083,7 @@ export type ApiMethods<F> = {
     /** Unique identifier of the message draft; must be non-zero. Changes of drafts with the same identifier are animated */
     draft_id: number;
     /** Content of the rich message draft */
-    rich_message: InputRichMessage<F>;
+    rich_message: InputRichMessageDraft<F>;
     /** Pass True to allow the user to stop the generation of the draft */
     can_stop?: boolean;
     /** Pass True to keep the draft visible after its generation is stopped by the user */
@@ -3250,7 +3250,7 @@ export interface InputStoryContentVideo<F> {
 }
 
 /** Describes a rich message to be sent. Exactly one of the fields `html`, `markdown`, or `blocks` must be used. */
-export type InputRichMessage<F> =
+export type InputRichMessage<F, Draft extends boolean = false> =
   & {
     /** List of media referenced in the `markdown` or `html` fields using `tg://photo?id=`, `tg://video?id=`, `tg://document?id=`, and `tg://audio?id=` links */
     media?: ReadonlyArray<InputRichMessageMedia<F>>;
@@ -3262,7 +3262,7 @@ export type InputRichMessage<F> =
   & (
     | {
       /** Content of the rich message to send described as a list of blocks. Required if `html` and `markdown` are not specified. */
-      blocks: ReadonlyArray<InputRichBlock<F>>;
+      blocks: ReadonlyArray<InputRichBlock<F, Draft>>;
       html?: undefined;
       markdown?: undefined;
     }
@@ -3279,6 +3279,9 @@ export type InputRichMessage<F> =
       markdown: string;
     }
   );
+
+/** Rich message content for sendRichMessageDraft, including thinking blocks. */
+export type InputRichMessageDraft<F> = InputRichMessage<F, true>;
 
 /** Describes a media element embedded in an outgoing rich message. */
 export interface InputRichMessageMedia<F> {
@@ -3318,8 +3321,8 @@ export interface InputRichMessageMedia<F> {
 - InputRichBlockPhoto
 - InputRichBlockVideo
 - InputRichBlockVoiceNote
-- InputRichBlockThinking */
-export type InputRichBlock<F> =
+- InputRichBlockThinking (only when Draft is true) */
+export type InputRichBlock<F, Draft extends boolean = false> =
   | InputRichBlockParagraph
   | InputRichBlockSectionHeading
   | InputRichBlockPreformatted
@@ -3327,14 +3330,14 @@ export type InputRichBlock<F> =
   | InputRichBlockDivider
   | InputRichBlockMathematicalExpression
   | InputRichBlockAnchor
-  | InputRichBlockList<F>
-  | InputRichBlockBlockQuotation<F>
+  | InputRichBlockList<F, Draft>
+  | InputRichBlockBlockQuotation<F, Draft>
   | InputRichBlockExpandableBlockQuotation
   | InputRichBlockPullQuotation
-  | InputRichBlockCollage<F>
-  | InputRichBlockSlideshow<F>
+  | InputRichBlockCollage<F, Draft>
+  | InputRichBlockSlideshow<F, Draft>
   | InputRichBlockTable
-  | InputRichBlockDetails<F>
+  | InputRichBlockDetails<F, Draft>
   | InputRichBlockMap
   | InputRichBlockButtons
   | InputRichBlockAnimation<F>
@@ -3343,7 +3346,10 @@ export type InputRichBlock<F> =
   | InputRichBlockPhoto<F>
   | InputRichBlockVideo<F>
   | InputRichBlockVoiceNote<F>
-  | InputRichBlockThinking;
+  | (Draft extends true ? InputRichBlockThinking : never);
+
+/** A structural block for sendRichMessageDraft, including nested thinking blocks. */
+export type InputRichBlockDraft<F> = InputRichBlock<F, true>;
 
 /** A text paragraph, corresponding to the HTML tag <p>. */
 export interface InputRichBlockParagraph {
@@ -3442,9 +3448,9 @@ export interface InputRichBlockThinking {
 }
 
 /** Represents an item of a list to be sent as part of a rich message. */
-export interface InputRichBlockListItem<F> {
+export interface InputRichBlockListItem<F, Draft extends boolean = false> {
   /** The content of the item */
-  blocks: ReadonlyArray<InputRichBlock<F>>;
+  blocks: ReadonlyArray<InputRichBlock<F, Draft>>;
   /** Pass True if the item has a checkbox */
   has_checkbox?: true;
   /** Pass True if the item has a checked checkbox */
@@ -3456,19 +3462,22 @@ export interface InputRichBlockListItem<F> {
 }
 
 /** Represents a list of blocks to be sent as part of a rich message. */
-export interface InputRichBlockList<F> {
+export interface InputRichBlockList<F, Draft extends boolean = false> {
   /** Type of the block, must be list */
   type: "list";
   /** Items of the list */
-  items: ReadonlyArray<InputRichBlockListItem<F>>;
+  items: ReadonlyArray<InputRichBlockListItem<F, Draft>>;
 }
 
 /** Represents a block quotation to be sent as part of a rich message. */
-export interface InputRichBlockBlockQuotation<F> {
+export interface InputRichBlockBlockQuotation<
+  F,
+  Draft extends boolean = false,
+> {
   /** Type of the block, must be blockquote */
   type: "blockquote";
   /** Content of the block */
-  blocks: ReadonlyArray<InputRichBlock<F>>;
+  blocks: ReadonlyArray<InputRichBlock<F, Draft>>;
   /** Credit of the block */
   credit?: RichText;
 }
@@ -3490,33 +3499,33 @@ export interface InputRichBlockTable {
 }
 
 /** Represents a collage of media to be sent as part of a rich message. */
-export interface InputRichBlockCollage<F> {
+export interface InputRichBlockCollage<F, Draft extends boolean = false> {
   /** Type of the block, must be collage */
   type: "collage";
   /** Elements of the collage */
-  blocks: ReadonlyArray<InputRichBlock<F>>;
+  blocks: ReadonlyArray<InputRichBlock<F, Draft>>;
   /** Caption of the block */
   caption?: RichBlockCaption;
 }
 
 /** Represents a slideshow to be sent as part of a rich message. */
-export interface InputRichBlockSlideshow<F> {
+export interface InputRichBlockSlideshow<F, Draft extends boolean = false> {
   /** Type of the block, must be slideshow */
   type: "slideshow";
   /** Elements of the slideshow */
-  blocks: ReadonlyArray<InputRichBlock<F>>;
+  blocks: ReadonlyArray<InputRichBlock<F, Draft>>;
   /** Caption of the block */
   caption?: RichBlockCaption;
 }
 
 /** Represents an expandable block for details disclosure to be sent as part of a rich message. */
-export interface InputRichBlockDetails<F> {
+export interface InputRichBlockDetails<F, Draft extends boolean = false> {
   /** Type of the block, must be details */
   type: "details";
   /** Always shown summary of the block */
   summary: RichText;
   /** Content of the block */
-  blocks: ReadonlyArray<InputRichBlock<F>>;
+  blocks: ReadonlyArray<InputRichBlock<F, Draft>>;
   /** Pass True if the content of the block is visible by default */
   is_open?: true;
 }

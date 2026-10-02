@@ -1,9 +1,23 @@
 import type {
+  Animation,
+  ApiMethods,
+  Audio,
   Chat,
   ChatFullInfo,
+  Document,
+  InputRichMessage,
+  InputRichMessageContent,
+  Link,
+  LivePhoto,
+  Location,
+  PhotoSize,
+  PollMedia,
   RichMessageButton,
   RichMessageButtonText,
   RichText,
+  Sticker,
+  Venue,
+  Video,
 } from "../index";
 
 declare const chat: Chat;
@@ -55,3 +69,75 @@ const invalidDateTime: RichMessageButtonText = {
 void invalidText;
 void invalidArray;
 void invalidDateTime;
+
+declare const animation: Animation;
+declare const audio: Audio;
+declare const document: Document;
+declare const link: Link;
+declare const live_photo: LivePhoto;
+declare const location: Location;
+declare const photo: PhotoSize[];
+declare const sticker: Sticker;
+declare const venue: Venue;
+declare const video: Video;
+const pollMedia: PollMedia[] = [
+  {},
+  { animation },
+  { audio },
+  { document },
+  { link },
+  { live_photo },
+  { location },
+  { photo },
+  { sticker },
+  { venue },
+  { video },
+];
+// @ts-expect-error At most one field may be present, including in object literals.
+const multipleMedia: PollMedia = { photo, video };
+const mixed = { photo, video };
+// @ts-expect-error Structural assignment must not bypass mutual exclusion.
+const multipleMediaVariable: PollMedia = mixed;
+void pollMedia;
+void multipleMedia;
+void multipleMediaVariable;
+
+declare const api: ApiMethods<never>;
+const thinking = { type: "thinking", text: "Working" } as const;
+const draft = { blocks: [thinking] } as const;
+const nestedDraft = {
+  blocks: [{
+    type: "details",
+    summary: "Details",
+    blocks: [{
+      type: "list",
+      items: [{ blocks: [thinking] }],
+    }],
+  }],
+} as const;
+api.sendRichMessageDraft({ chat_id: 1, draft_id: 1, rich_message: draft });
+api.sendRichMessageDraft({
+  chat_id: 1,
+  draft_id: 1,
+  rich_message: nestedDraft,
+});
+// @ts-expect-error Thinking is only allowed in drafts.
+const normal: InputRichMessage<never> = draft;
+// @ts-expect-error Nesting must preserve the draft-only restriction.
+const nestedNormal: InputRichMessage<never> = nestedDraft;
+// @ts-expect-error Ordinary sends cannot contain a thinking placeholder.
+api.sendRichMessage({ chat_id: 1, rich_message: draft });
+// @ts-expect-error Inline and guest rich content cannot contain draft blocks.
+const inline: InputRichMessageContent = { rich_message: nestedDraft };
+// @ts-expect-error Edits cannot introduce a draft-only block.
+api.editMessageText({ chat_id: 1, message_id: 1, rich_message: draft });
+api.editEphemeralMessageText({
+  chat_id: 1,
+  receiver_user_id: 2,
+  ephemeral_message_id: 1,
+  // @ts-expect-error Ephemeral edits cannot introduce a draft-only block.
+  rich_message: nestedDraft,
+});
+void normal;
+void nestedNormal;
+void inline;

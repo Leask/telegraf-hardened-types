@@ -16,10 +16,7 @@ import type {
   UniqueGift,
   User,
 } from "./manage.ts";
-import type {
-  InlineKeyboardMarkup,
-  RichMessageButton,
-} from "./markup.ts";
+import type { InlineKeyboardMarkup, RichMessageButton } from "./markup.ts";
 import type {
   InputMediaAnimation,
   InputMediaAudio,
@@ -2075,18 +2072,25 @@ export declare namespace PollMedia {
   }
 }
 
+type AtMostOne<T> = {
+  [K in keyof T]:
+    & Pick<Partial<T>, K>
+    & Partial<Record<Exclude<keyof T, K>, never>>;
+}[keyof T];
+
 /** This object represents media attached to a poll. At most one of the optional fields can be present in any given object. */
-export type PollMedia =
-  | PollMedia.AnimationMedia
-  | PollMedia.AudioMedia
-  | PollMedia.DocumentMedia
-  | PollMedia.LinkMedia
-  | PollMedia.LivePhotoMedia
-  | PollMedia.LocationMedia
-  | PollMedia.PhotoMedia
-  | PollMedia.StickerMedia
-  | PollMedia.VenueMedia
-  | PollMedia.VideoMedia;
+export type PollMedia = AtMostOne<
+  & PollMedia.AnimationMedia
+  & PollMedia.AudioMedia
+  & PollMedia.DocumentMedia
+  & PollMedia.LinkMedia
+  & PollMedia.LivePhotoMedia
+  & PollMedia.LocationMedia
+  & PollMedia.PhotoMedia
+  & PollMedia.StickerMedia
+  & PollMedia.VenueMedia
+  & PollMedia.VideoMedia
+>;
 
 /** This object contains information about one answer option in a poll. */
 export interface PollOption {
@@ -2442,16 +2446,16 @@ export interface ForumTopicEdited {
 }
 
 /** This object represents a service message about a forum topic closed in the chat. Currently holds no information. */
-export interface ForumTopicClosed { }
+export interface ForumTopicClosed {}
 
 /** This object represents a service message about a forum topic reopened in the chat. Currently holds no information. */
-export interface ForumTopicReopened { }
+export interface ForumTopicReopened {}
 
 /** This object represents a service message about General forum topic hidden in the chat. Currently holds no information. */
-export interface GeneralForumTopicHidden { }
+export interface GeneralForumTopicHidden {}
 
 /** This object represents a service message about General forum topic unhidden in the chat. Currently holds no information. */
-export interface GeneralForumTopicUnhidden { }
+export interface GeneralForumTopicUnhidden {}
 
 /** This object contains information about a user that was shared with the bot using a KeyboardButtonRequestUsers button. **/
 export interface SharedUser {
@@ -2554,7 +2558,7 @@ export interface VideoChatScheduled {
 }
 
 /** This object represents a service message about a video chat started in the chat. Currently holds no information. */
-export interface VideoChatStarted { }
+export interface VideoChatStarted {}
 
 /** This object represents a service message about a video chat ended in the chat. */
 export interface VideoChatEnded {
