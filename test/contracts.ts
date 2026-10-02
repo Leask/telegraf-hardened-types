@@ -5,6 +5,8 @@ import type {
   Chat,
   ChatFullInfo,
   Document,
+  InputRichBlock,
+  InputRichBlockDraft,
   InputRichMessage,
   InputRichMessageContent,
   Link,
@@ -103,6 +105,17 @@ void multipleMedia;
 void multipleMediaVariable;
 
 declare const api: ApiMethods<never>;
+declare const completed: InputRichMessage<never>;
+declare const completedBlock: InputRichBlock<never>;
+const reusableBlock: InputRichBlockDraft<never> = completedBlock;
+api.sendRichMessageDraft({ chat_id: 1, draft_id: 1, rich_message: completed });
+api.sendRichMessageDraft({
+  chat_id: 1,
+  draft_id: 1,
+  rich_message: {
+    blocks: [reusableBlock, { type: "thinking", text: "Working" }],
+  },
+});
 const thinking = { type: "thinking", text: "Working" } as const;
 const draft = { blocks: [thinking] } as const;
 const nestedDraft = {

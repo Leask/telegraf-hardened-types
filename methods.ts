@@ -3281,7 +3281,7 @@ export type InputRichMessage<F, Draft extends boolean = false> =
   );
 
 /** Rich message content for sendRichMessageDraft, including thinking blocks. */
-export type InputRichMessageDraft<F> = InputRichMessage<F, true>;
+export type InputRichMessageDraft<F> = InputRichMessage<F, boolean>;
 
 /** Describes a media element embedded in an outgoing rich message. */
 export interface InputRichMessageMedia<F> {
@@ -3349,7 +3349,7 @@ export type InputRichBlock<F, Draft extends boolean = false> =
   | (Draft extends true ? InputRichBlockThinking : never);
 
 /** A structural block for sendRichMessageDraft, including nested thinking blocks. */
-export type InputRichBlockDraft<F> = InputRichBlock<F, true>;
+export type InputRichBlockDraft<F> = InputRichBlock<F, boolean>;
 
 /** A text paragraph, corresponding to the HTML tag <p>. */
 export interface InputRichBlockParagraph {
