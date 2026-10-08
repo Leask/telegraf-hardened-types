@@ -1,9 +1,15 @@
 "use strict";
 
 const assert = require("node:assert/strict");
-const { copyFileSync, mkdirSync, mkdtempSync, readdirSync, rmSync } = require(
-  "node:fs",
-);
+const {
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  rmSync,
+  statSync,
+} = require("node:fs");
 const { tmpdir } = require("node:os");
 const { join, resolve } = require("node:path");
 const { test } = require("node:test");
@@ -35,11 +41,25 @@ function check(root) {
 }
 
 const source = resolve(__dirname, "..");
+
+function assertDeclarationsFresh() {
+  for (const file of readdirSync(source)) {
+    if (!file.endsWith(".ts") || file.endsWith(".d.ts")) continue;
+    const declaration = join(source, file.replace(/\.ts$/, ".d.ts"));
+    assert.ok(
+      existsSync(declaration) &&
+        statSync(declaration).mtimeMs >= statSync(join(source, file)).mtimeMs,
+      `${file} is newer than its declaration; run \`npm run prepare\` first.`,
+    );
+  }
+}
+
 test("source types accept and reject the documented Bot API contracts", () => {
   check(source);
 });
 
 test("generated declarations enforce the same contracts without source files", (t) => {
+  assertDeclarationsFresh();
   const root = mkdtempSync(join(tmpdir(), "telegraf-types-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   for (const file of readdirSync(source)) {
