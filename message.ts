@@ -2072,11 +2072,14 @@ export declare namespace PollMedia {
   }
 }
 
-type AtMostOne<T> = {
-  [K in keyof T]:
-    & Pick<Partial<T>, K>
-    & Partial<Record<Exclude<keyof T, K>, never>>;
-}[keyof T];
+/** Either no field of T, or exactly one required field with all others absent, so `media.photo !== undefined` narrows the whole object. */
+type AtMostOne<T> =
+  | { [K in keyof T]?: never }
+  | {
+    [K in keyof T]:
+      & Pick<T, K>
+      & { [P in Exclude<keyof T, K>]?: never };
+  }[keyof T];
 
 /** This object represents media attached to a poll. At most one of the optional fields can be present in any given object. */
 export type PollMedia = AtMostOne<

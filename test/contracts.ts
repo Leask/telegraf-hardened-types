@@ -22,12 +22,17 @@ import type {
   Video,
 } from "../index";
 
+type PersonalChat = Extract<ChatFullInfo, { type: "private" }>["personal_chat"];
+declare const channel: Chat.ChannelChat;
 declare const chat: Chat;
-const personalChat: Extract<
-  ChatFullInfo,
-  { type: "private" }
->["personal_chat"] = chat;
+declare const receivedPersonalChat: PersonalChat;
+const personalChat: PersonalChat = channel;
+const personalChatTitle: string | undefined = receivedPersonalChat?.title;
 void personalChat;
+// @ts-expect-error The personal chat of a user is always a channel.
+const notChannel: PersonalChat = chat;
+void personalChatTitle;
+void notChannel;
 
 const emoji: RichText.CustomEmoji = {
   type: "custom_emoji",
@@ -100,6 +105,12 @@ const multipleMedia: PollMedia = { photo, video };
 const mixed = { photo, video };
 // @ts-expect-error Structural assignment must not bypass mutual exclusion.
 const multipleMediaVariable: PollMedia = mixed;
+declare const media: PollMedia;
+if (media.photo !== undefined) {
+  // Checking one field narrows the whole object to that variant.
+  const photoMedia: PollMedia.PhotoMedia = media;
+  void photoMedia;
+}
 void pollMedia;
 void multipleMedia;
 void multipleMediaVariable;
