@@ -10,6 +10,8 @@ hardened changes:
 
 - Bot API 10.3 coverage aligned with the upstream Telegraf type sync
 - keeps the hardened package name and release channel
+- `InputRichBlockThinking` is only accepted by `sendRichMessageDraft`: `InputRichBlock<F>` and `InputRichMessage<F>` no longer include it, so type draft content as `InputRichBlockDraft<F>` / `InputRichMessageDraft<F>` instead
+- `PollMedia` rejects objects with more than one media field; narrow it with a field check such as `media.photo !== undefined` (an `"photo" in media` check does not narrow the field type)
 
 ## Installation
 
