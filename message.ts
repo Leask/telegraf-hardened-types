@@ -1269,7 +1269,7 @@ export interface PaidMediaInfo {
   paid_media: PaidMedia[];
 }
 
-declare namespace PaidMedia {
+export declare namespace PaidMedia {
   /** The paid media isn't available before the payment. */
   export interface PaidMediaPreview {
     /** Type of the paid media, always “preview” */
