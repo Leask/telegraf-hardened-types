@@ -5,6 +5,10 @@ import type {
   Chat,
   ChatFullInfo,
   Document,
+  InputMediaLivePhoto,
+  InputMediaPhoto,
+  InputPollMedia,
+  InputPollOption,
   InputRichBlock,
   InputRichBlockDraft,
   InputRichMessage,
@@ -165,3 +169,79 @@ api.editEphemeralMessageText({
 void normal;
 void nestedNormal;
 void inline;
+
+// Positive controls: the same shapes without the thinking block are accepted,
+// so the @ts-expect-error cases above fail only because of the draft-only block.
+const paragraph = { type: "paragraph", text: "Done" } as const;
+const finished = { blocks: [paragraph] } as const;
+const nestedFinished = {
+  blocks: [{
+    type: "details",
+    summary: "Details",
+    blocks: [{
+      type: "list",
+      items: [{ blocks: [paragraph] }],
+    }],
+  }],
+} as const;
+const normalControl: InputRichMessage<never> = finished;
+const nestedNormalControl: InputRichMessage<never> = nestedFinished;
+api.sendRichMessage({ chat_id: 1, rich_message: finished });
+api.sendRichMessage({ chat_id: 1, rich_message: completed });
+const inlineControl: InputRichMessageContent = { rich_message: nestedFinished };
+api.editMessageText({ chat_id: 1, message_id: 1, rich_message: finished });
+api.editEphemeralMessageText({
+  chat_id: 1,
+  receiver_user_id: 2,
+  ephemeral_message_id: 1,
+  rich_message: nestedFinished,
+});
+void normalControl;
+void nestedNormalControl;
+void inlineControl;
+
+// Upload paths: with a real InputFile type, F | string fields accept both an
+// uploaded file and a string (file_id, URL or attach://<name>).
+interface Upload {
+  readonly upload: true;
+}
+declare const upload: Upload;
+declare const uploadApi: ApiMethods<Upload>;
+uploadApi.sendDocument({
+  chat_id: 1,
+  document: upload,
+  thumbnail: upload,
+});
+uploadApi.sendDocument({
+  chat_id: 1,
+  document: "file_id",
+  thumbnail: "attach://thumb",
+});
+uploadApi.sendLivePhoto({ chat_id: 1, live_photo: upload, photo: upload });
+const uploadedPhoto: InputMediaPhoto<Upload> = { type: "photo", media: upload };
+const uploadedLivePhoto: InputMediaLivePhoto<Upload> = {
+  type: "live_photo",
+  media: upload,
+  photo: "file_id",
+};
+const pollMediaUpload: InputPollMedia<Upload> = uploadedPhoto;
+const pollOptionUpload: InputPollOption<Upload> = {
+  text: "Option",
+  media: uploadedLivePhoto,
+};
+uploadApi.sendPoll({
+  chat_id: 1,
+  question: "Question?",
+  media: pollMediaUpload,
+  options: [pollOptionUpload, { text: "Other" }],
+});
+const richUpload: InputRichMessage<Upload> = {
+  blocks: [{ type: "photo", photo: uploadedPhoto }],
+  media: [{ id: "photo", media: uploadedPhoto }],
+};
+uploadApi.sendRichMessage({ chat_id: 1, rich_message: richUpload });
+// @ts-expect-error Without an InputFile type (F = never) only strings are accepted.
+api.sendDocument({ chat_id: 1, document: upload });
+// @ts-expect-error Inline rich content can only reference already uploaded files.
+const inlineUpload: InputRichMessageContent = { rich_message: richUpload };
+void inlineUpload;

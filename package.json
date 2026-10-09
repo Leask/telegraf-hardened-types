@@ -34,6 +34,6 @@
   ],
   "devDependencies": {
     "deno": "2.2.7",
-    "typescript": "^5.9.3"
+    "typescript": "5.9.3"
   }
 }
