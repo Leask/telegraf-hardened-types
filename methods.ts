@@ -3346,9 +3346,14 @@ export type InputRichBlock<F, Draft extends boolean = false> =
   | InputRichBlockPhoto<F>
   | InputRichBlockVideo<F>
   | InputRichBlockVoiceNote<F>
+  // Draft is a naked type parameter, so this conditional distributes over a
+  // union: Draft = boolean is evaluated as true | false and yields
+  // InputRichBlockThinking | never, while the default Draft = false yields
+  // never. Wrapping Draft (e.g. [Draft] extends [true]) would disable
+  // distribution and drop thinking blocks from drafts.
   | (Draft extends true ? InputRichBlockThinking : never);
 
-/** A structural block for sendRichMessageDraft, including nested thinking blocks. */
+/** A structural block for sendRichMessageDraft, including nested thinking blocks. Uses Draft = boolean rather than true so that every completed block (Draft = false) stays assignable to a draft block. */
 export type InputRichBlockDraft<F> = InputRichBlock<F, boolean>;
 
 /** A text paragraph, corresponding to the HTML tag <p>. */
